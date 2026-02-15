@@ -12,7 +12,7 @@ public class Maze {
         Room entrance = new Room("Entrance") {
             @Override
             public String getDescription() {
-                return "You are at the entrance of the maze. There's a passage to the east and a darker corridor to the south.";
+                return "You are at the entrance of the maze. There's a passage to the east. Good luck on your travels!";
             }
         };
 
@@ -23,17 +23,23 @@ public class Maze {
             }
         };
 
-        TreasureRoom treasure = new TreasureRoom("Treasure Chamber", "Golden Chalice", 10);
+        TreasureRoom treasure = new TreasureRoom("Treasure Chamber", "Golden Chalice", 25);
         PuzzleRoom puzzle = new PuzzleRoom("Puzzle Alcove", "Ancient Coin", 5);
         SupplyRoom supply = new SupplyRoom("Supply Closet", "Rope", 3);
         ExitRoom exit = new ExitRoom("Outer Door", "Fresh air pours in from outside.");
+        // Additional rooms
+        RatDen ratDen = new RatDen("Rat Den", "Rat tail", -5);
+        DeadEnd deadEnd = new DeadEnd("Dead End");
+        MirrorRoom mirror = new MirrorRoom("Mirror Room", "Small diamond", 15);
+        TrophyRoom trophy = new TrophyRoom("Trophy Room", "Jeweled Crown", 50);
 
         // Connect rooms
+        // Changed the layout to create a more complex maze with more branching paths
         entrance.setEast(hallway);
-        entrance.setSouth(puzzle);
 
         hallway.setWest(entrance);
-        hallway.setEast(treasure);
+        hallway.setEast(supply);
+        hallway.setNorth(ratDen);
         hallway.setUp(new Room("Attic") {
             @Override
             public String getDescription() {
@@ -47,17 +53,29 @@ public class Maze {
             }
         });
 
-        treasure.setWest(hallway);
-        treasure.setSouth(exit);
+        ratDen.setSouth(hallway);
+        ratDen.setEast(treasure);
 
-        puzzle.setNorth(entrance);
-        puzzle.setEast(supply);
+        treasure.setWest(ratDen);
+        treasure.setSouth(supply);
+        treasure.setNorth(deadEnd);
 
-        supply.setWest(puzzle);
+        deadEnd.setSouth(treasure);
+
+        supply.setNorth(treasure);
+        supply.setWest(hallway);
+        supply.setSouth(mirror);
         supply.setEast(exit);
 
-        exit.setNorth(treasure);
         exit.setWest(supply);
+
+        mirror.setNorth(supply);
+        mirror.setSouth(puzzle);
+
+        puzzle.setNorth(mirror);
+        puzzle.setEast(trophy);
+
+        trophy.setWest(puzzle);
 
         // Starting room
         currentRoom = entrance;
